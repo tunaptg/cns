@@ -318,12 +318,25 @@ body {
 .empty-history { text-align: center; color: var(--text-sub); font-size: 14px; font-weight: 600; padding: 20px 0; }
 
 /* CSS Màu Biến Thể Gốc */
-.c-anh-vang { color: #E0A800; } .c-cau-vong { color: #FF0000; font-weight: 800; }
-.c-am-uot { color: #2196F3; } .c-nhiem-dien { color: #FF9800; }
-.c-gio { color: #00BCD4; } .c-khi-lanh { color: #3F51B5; }
-.c-cat { color: #795548; } .c-anh-trang { color: #9C27B0; }
-.c-bang { color: #81D4FA; } .c-cuc-quang { color: #00E676; }
-.c-suong { color: #9E9E9E; } .c-kho { color: #A52A2A; }
-.c-nguyen-rua { color: #311B92; } .c-den-troi { color: #FF5722; }
-.c-ao-anh { color: #F06292; } .c-phao-hoa { color: #E91E63; }
-.c-buom { color: #F48FB1; } .c-giai-dieu { color: #4DB6AC; }
+.c-anh-vang     { color: #FFB800; font-weight: 800; } /* Vàng nghệ */
+.c-cau-vong     { color: #FF6B6B; font-weight: 800; } /* Đỏ hồng / Cam san hô */
+.c-am-uot       { color: #54A0FF; font-weight: 800; } /* Xanh biển nhạt */
+.c-nhiem-dien   { color: #D4D700; font-weight: 800; } /* Vàng chanh / Úa */
+.c-gio          { color: #4ECAF6; font-weight: 800; } /* Xanh da trời / Cyan */
+.c-khi-lanh     { color: #8A9CE2; font-weight: 800; } /* Xanh tím pastel */
+
+/* Hàng 2 */
+.c-cat          { color: #E5A93C; font-weight: 800; } /* Vàng cát */
+.c-anh-trang    { color: #C58BF2; font-weight: 800; } /* Tím ánh trăng */
+.c-bang         { color: #76E3E3; font-weight: 800; } /* Xanh băng giá */
+.c-cuc-quang    { color: #F368E0; font-weight: 800; } /* Hồng cánh sen */
+.c-suong        { color: #7BED9F; font-weight: 800; } /* Xanh lá pastel */
+.c-kho          { color: #FF9F43; font-weight: 800; } /* Cam ấm */
+
+/* Hàng 3 & 4 */
+.c-phao-hoa     { color: #FF66B2; font-weight: 800; } /* Hồng neon */
+.c-buom         { color: #D9A5EC; font-weight: 800; } /* Tím hồng nhạt */
+.c-giai-dieu    { color: #55E6C1; font-weight: 800; } /* Xanh ngọc bích */
+.c-nguyen-rua   { color: #B07D8B; font-weight: 800; } /* Hồng đất / Tím xám */
+.c-den-troi     { color: #C68E6B; font-weight: 800; } /* Cam đất */
+.c-ao-anh       { color: #D4A5B8; font-weight: 800; } /* Hồng tro pastel */
