@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾 Cân Nông Sản - PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <!-- iOS support -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#4318FF">
+    <meta name="theme-color" content="#4318FF">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<div class="calc-app">
+    <div class="header">
+        <h2>🌾 Cân Nông Sản</h2>
+    </div>
+
+    <div class="app-grid">
+        <!-- CỘT TRÁI: Nhập liệu -->
+        <div class="panel">
+            <div>
+                <div class="section-title">1. Chọn Nông Sản</div>
+                <div class="grid-selector" id="ui-prods"></div>
+            </div>
+
+            <div>
+                <div class="section-title">
+                    <span>2. Chọn Biến Thể</span>
+                    <span style="color: var(--danger); font-size: 12px;">*Tối đa 5</span>
+                </div>
+                <div class="grid-selector" id="ui-vars" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); max-height: 180px;"></div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-box">
+                    <label>CÂN NẶNG (KG)</label>
+                    <input type="number" id="calc-w" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="input-box">
+                    <label><span>BẠN BÈ (+3%)</span> <span id="f-val" style="color: var(--primary);">0</span></label>
+                    <input type="range" id="calc-f" min="0" max="5" value="0" oninput="document.getElementById('f-val').innerText=this.value" />
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-clear" onclick="clearInputs()">LÀM MỚI</button>
+                <button class="btn btn-calc" onclick="execCalc()">🚀 THÊM VÀO GIỎ</button>
+            </div>
+        </div>
+
+        <!-- CỘT PHẢI: Lịch sử & Tính toán -->
+        <div class="panel" style="gap: 24px;">
+            <div class="total-box">
+                <span>TỔNG XU ƯỚC TÍNH</span>
+                <strong id="calc-sum">0</strong>
+            </div>
+            
+            <div>
+                <div class="section-title">
+                    <span>Lịch Sử Tính Toán</span>
+                    <button onclick="clearAllHistory()" style="background: none; border: none; color: var(--danger); cursor: pointer; font-weight: 700; font-size: 12px;">XÓA HẾT</button>
+                </div>
+                <div class="history-box" id="calc-history">
+                    <div class="empty-history">Giỏ hàng đang trống</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
