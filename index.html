@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌾Cân Nông Sản</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #F4F7FE;
+            --card-bg: #FFFFFF;
+            --primary: #4318FF;
+            --primary-hover: #3311cc;
+            --secondary: #F4F7FE;
+            --border-color: #E2E8F0;
+            --text-main: #1B2559;
+            --text-sub: #A3AED0;
+            --danger: #EE5D50;
+            --danger-bg: #FDE8E8;
+            --success: #01B574;
+            --success-bg: #E1FCEF;
+            --border-radius: 24px;
+            --shadow-card: 0px 18px 40px rgba(112, 144, 176, 0.12);
+            --shadow-btn: 0px 4px 12px rgba(112, 144, 176, 0.08);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .calc-app {
+            width: 100%;
+            max-width: 980px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-weight: 900;
+            font-size: 28px;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .mode-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            background: #E2E8F0;
+            padding: 4px;
+            border-radius: 16px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: #64748B;
+            font-weight: 800;
+            font-size: 13px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .app-grid {
+                grid-template-columns: 1.25fr 1fr;
+                align-items: start;
+            }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-card);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Lưới chọn Nông Sản & Biến thể */
+        .grid-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            gap: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 4px;
+            border-radius: 16px;
+            border: 1px solid transparent;
+        }
+
+        .grid-selector::-webkit-scrollbar, .history-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        .grid-selector::-webkit-scrollbar-thumb, .history-box::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+
+        .opt-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 10px 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow-btn);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+        }
+
+        .opt-btn:hover {
+            transform: translateY(-2px);
+            border-color: #B0BCE5;
+            box-shadow: 0px 8px 16px rgba(112, 144, 176, 0.15);
+        }
+
+        .opt-btn.selected {
+            border-color: var(--primary);
+            background: #F4F7FE;
+            color: var(--primary);
+        }
+
+        .opt-btn .icon-box {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* Biến thể opt */
+        .cv-opt {
+            padding: 8px 6px;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .cv-opt .desc {
+            font-size: 10px;
+            color: var(--text-sub);
+            font-weight: 800;
+        }
+
+        /* Form nhập liệu */
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 500px) {
+            .input-group.two-col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-box {
+            background: var(--secondary);
+            border-radius: 16px;
+            padding: 12px 16px;
+            border: 1px solid transparent;
+            transition: var(--transition);
+        }
+
+        .input-box:focus-within {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.1);
+        }
+
+        .input-box label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .input-box input[type="text"] {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            outline: none;
+            font-family: monospace;
+        }
+
+        .input-box input[type="text"]::placeholder {
+            color: #CBD5E1;
+        }
+
+        /* Thanh Buff Bạn Bè */
+        .friend-buff-box {
+            background: var(--secondary);
+            border-radius: 16px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .friend-buff-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-sub);
+            text-transform: uppercase;
+        }
+
+        .friend-badge {
+            background: #E0E7FF;
+            color: var(--primary);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .friend-range {
+            width: 100%;
+            height: 8px;
+            background: #CBD5E1;
+            border-radius: 6px;
+            outline: none;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .friend-chips-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+
+        .f-chip {
+            padding: 6px 2px;
+            text-align: center;
+            border-radius: 10px;
+            background: white;
+            border: 1px solid var(--border-color);
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .f-chip:hover {
+            border-color: var(--primary);
+            background: #F4F7FE;
+        }
+
+        .f-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(67, 24, 255, 0.25);
+        }
+
+        .friend-note {
+            font-size: 10px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        /* Nút Action */
+        .action-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            color: white;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:active { transform: scale(0.96); }
+        .btn-calc { 
+            background: var(--primary); 
+            box-shadow: 0px 8px 16px rgba(67, 24, 255, 0.25); 
+        }
+        .btn-calc:hover { background: var(--primary-hover); }
+
+        .btn-clear { 
+            background: var(--danger-bg); 
+            color: var(--danger); 
+            flex: 0.35; 
+        }
+        .btn-clear:hover { background: #FAD4D4; }
+
+        /* Lịch sử & Tổng */
+        .total-box {
+            background: linear-gradient(135deg, #4318FF, #868CFF);
+            color: white;
+            padding: 22px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0px 10px 20px rgba(67, 24, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .total-box::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); animation: shine 3s infinite;
+        }
+        @keyframes shine { 100% { left: 200%; } }
+
+        .total-box span { font-size: 12px; font-weight: 800; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; }
+        .total-box strong { font-size: 30px; font-weight: 900; display: block; margin-top: 6px; font-family: monospace; }
+        .total-box .sub-info { font-size: 12px; opacity: 0.85; margin-top: 4px; font-family: monospace; }
+
+        .history-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 380px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .history-item {
+            background: var(--secondary);
+            padding: 12px 14px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+        .history-item:hover {
+            background: #E9EDF7;
+        }
+
+        .history-info {
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .history-info b { font-size: 15px; color: var(--primary); display: block; margin-top: 2px; font-family: monospace;}
+
+        .btn-del {
+            background: var(--card-bg); 
+            color: var(--danger); 
+            border: 1px solid var(--danger-bg); 
+            width: 32px; height: 32px; 
+            border-radius: 10px;
+            font-weight: 900; 
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-del:hover { background: var(--danger); color: white; }
+
+        .empty-history { text-align: center; color: var(--text-sub); font-size: 13px; font-weight: 600; padding: 20px 0; }
+
+        /* Code box */
+        .code-snippet-box {
+            background: #0F172A;
+            color: #34D399;
+            padding: 14px;
+            border-radius: 14px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            border: 1px solid #1E293B;
+            position: relative;
+        }
+
+        .btn-copy-code {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: var(--transition);
+        }
+        .btn-copy-code:hover { background: var(--primary-hover); }
+
+        /* Màu Sắc Biến Thể Mới */
+        .c-anh-vang     { color: #D97706; font-weight: 800; }
+        .c-cau-vong     { color: #E11D48; font-weight: 800; }
+        .c-bang         { color: #0891B2; font-weight: 800; }
+        .c-cuc-quang    { color: #D946EF; font-weight: 800; }
+        .c-suong        { color: #059669; font-weight: 800; }
+        .c-den-troi     { color: #C2410C; font-weight: 800; }
+        .c-khi-lanh     { color: #6366F1; font-weight: 800; }
+        .c-anh-trang    { color: #9333EA; font-weight: 800; }
+        .c-buom         { color: #A855F7; font-weight: 800; }
+        .c-ao-anh       { color: #BE185D; font-weight: 800; }
+        .c-giai-dieu    { color: #0D9488; font-weight: 800; }
+        .c-gio          { color: #0284C7; font-weight: 800; }
+        .c-cat          { color: #B45309; font-weight: 800; }
+        .c-kho          { color: #EA580C; font-weight: 800; }
+        .c-nguyen-rua   { color: #9F1239; font-weight: 800; }
+        .c-phao-hoa     { color: #EC4899; font-weight: 800; }
+        .c-nhiem-dien   { color: #84CC16; font-weight: 800; }
+        .c-am-uot       { color: #2563EB; font-weight: 800; }
+    </style>
+<script src="/_aistudio-iframe.js?v=6634132a"></script></head>
+<body>
+
+<div class="calc-app">
+    <div class="header">
+        <h2>🌾 Cân Nông Sản - made by Tuna</h2>
+		<h3>Tiktok: <a href="https://www.tiktok.com/@_tuna.76">Cá ngừ đẹp trai</a> </h3>
+        <div class="mode-nav">
+            <button class="mode-btn active" id="tab-calc" onclick="switchMode('calc')">CÂN NÔNG SẢN</button>
+            <button class="mode-btn" id="tab-reverse" onclick="switchMode('reverse')">SUY NGƯỢC GIÁ</button>
+        </div>
+    </div>
+
+    <!-- CHẾ ĐỘ 1: CÂN NÔNG SẢN (Tính xu thuận) -->
+    <div class="app-grid" id="mode-calc-view">
+        <div class="panel">
+            <div>
+                <div class="section-title">
+                    <span>1. Chọn Nông Sản</span>
+                    <span id="selected-p-badge" style="color: var(--primary); font-size: 11px;">Chưa chọn</span>
+                </div>
+                <div class="grid-selector" id="ui-prods-calc"></div>
+            </div>
+
+            <div>
+                <div class="section-title">
+                    <span>2. Chọn Biến Thể</span>
+                    <span id="calc-var-count" style="color: var(--danger); font-size: 12px;">*Tối đa 5 (0/5)</span>
+                </div>
+                <div class="grid-selector" id="ui-vars-calc" style="grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));"></div>
+                <div id="calc-mul-summary" style="font-size: 11px; color: var(--text-sub); font-weight: 700; margin-top: 6px;">
+                    Tổng hệ số: x1.00
+                </div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-box">
+                    <label>CÂN NẶNG (KG)</label>
+                    <input type="text" id="calc-w-val" placeholder="VD: 1820.52">
+                </div>
+            </div>
+
+            <!-- THANH BUFF BẠN BÈ: Max 4 người, mỗi người +5% vào giá trị sau cùng -->
+            <div class="friend-buff-box">
+                <div class="friend-buff-header">
+                    <span>👥 Buff Bạn Bè (+5%/người, max 4)</span>
+                    <span class="friend-badge" id="calc-f-badge">+0% (0/4 bạn)</span>
+                </div>
+                <input type="range" class="friend-range" id="calc-f-range" min="0" max="4" value="0" step="1" oninput="setCalcFriend(this.value)">
+                <div class="friend-chips-row">
+                    <button type="button" class="f-chip active" id="calc-fc-0" onclick="setCalcFriend(0)">+0% (0)</button>
+                    <button type="button" class="f-chip" id="calc-fc-1" onclick="setCalcFriend(1)">+5% (1)</button>
+                    <button type="button" class="f-chip" id="calc-fc-2" onclick="setCalcFriend(2)">+10% (2)</button>
+                    <button type="button" class="f-chip" id="calc-fc-3" onclick="setCalcFriend(3)">+15% (3)</button>
+                    <button type="button" class="f-chip" id="calc-fc-4" onclick="setCalcFriend(4)">+20% (4)</button>
+                </div>
+                <div class="friend-note">*Mỗi người bạn trong phòng +5% vào giá trị xu sau cùng (Tối đa 4 người = +20%)</div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-clear" onclick="clearCalcInputs()">LÀM MỚI</button>
+                <button class="btn btn-calc" onclick="execForwardCalc()">🚀 THÊM VÀO GIỎ</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="total-box">
+                <span>TỔNG XU ƯỚC TÍNH</span>
+                <strong id="calc-sum">0 xu</strong>
+            </div>
+
+            <div>
+                <div class="section-title">
+                    <span>Lịch Sử Cân Nông Sản</span>
+                    <button onclick="clearCalcHistory()" style="background: none; border: none; color: var(--danger); cursor: pointer; font-weight: 700; font-size: 12px;">XÓA HẾT</button>
+                </div>
+                <div class="history-box" id="calc-history-list">
+                    <div class="empty-history">Giỏ hàng đang trống</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHẾ ĐỘ 2: SUY NGƯỢC ĐƠN GIÁ (Tính xu/kg từ mẫu thu hoạch thực tế) -->
+    <div class="app-grid" id="mode-reverse-view" style="display: none;">
+        <div class="panel">
+            <div>
+                <div class="section-title">
+                    <span>1. Tên Nông Sản Mẫu</span>
+                </div>
+                <div class="input-box">
+                    <label>TÊN LOẠI CÂY</label>
+                    <input type="text" id="rev-name" placeholder="VD: Củ cải đỏ, Bí ngô, Xoài...">
+                </div>
+                <!-- Chip gợi ý -->
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; max-height: 70px; overflow-y: auto;" id="rev-preset-chips"></div>
+            </div>
+
+            <div class="input-group two-col">
+                <div class="input-box">
+                    <label>SỐ XU NHẬN ĐƯỢC</label>
+                    <input type="text" id="rev-coins" placeholder="VD: 70345010">
+                </div>
+                <div class="input-box">
+                    <label>CÂN NẶNG (KG)</label>
+                    <input type="text" id="rev-w" placeholder="VD: 1820.52">
+                </div>
+            </div>
+
+            <div>
+                <div class="section-title">
+                    <span>2. Biến Thể Của Mẫu</span>
+                    <span id="rev-var-count" style="color: var(--danger); font-size: 12px;">*Tối đa 5 (0/5)</span>
+                </div>
+                <div class="grid-selector" id="ui-vars-rev" style="grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));"></div>
+                <div id="rev-mul-summary" style="font-size: 11px; color: var(--text-sub); font-weight: 700; margin-top: 6px;">
+                    Tổng hệ số: x1.00
+                </div>
+            </div>
+
+            <!-- THANH BUFF BẠN BÈ LÚC BÁN MẪU: Max 4 người, mỗi người +5% -->
+            <div class="friend-buff-box">
+                <div class="friend-buff-header">
+                    <span>👥 Bạn Bè Lúc Bán Mẫu (+5%/người, max 4)</span>
+                    <span class="friend-badge" id="rev-f-badge">+0% (0/4 bạn)</span>
+                </div>
+                <input type="range" class="friend-range" id="rev-f-range" min="0" max="4" value="0" step="1" oninput="setRevFriend(this.value)">
+                <div class="friend-chips-row">
+                    <button type="button" class="f-chip active" id="rev-fc-0" onclick="setRevFriend(0)">+0% (0)</button>
+                    <button type="button" class="f-chip" id="rev-fc-1" onclick="setRevFriend(1)">+5% (1)</button>
+                    <button type="button" class="f-chip" id="rev-fc-2" onclick="setRevFriend(2)">+10% (2)</button>
+                    <button type="button" class="f-chip" id="rev-fc-3" onclick="setRevFriend(3)">+15% (3)</button>
+                    <button type="button" class="f-chip" id="rev-fc-4" onclick="setRevFriend(4)">+20% (4)</button>
+                </div>
+                <div class="friend-note">*Game đã tự cộng +5%/người vào xu bán mẫu; công cụ sẽ chia tỉ lệ để hoàn nguyên giá gốc xu/kg.</div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-clear" onclick="clearRevInputs()">LÀM MỚI</button>
+                <button class="btn btn-calc" onclick="addReverseSample()">🚀 THÊM MẪU PHÂN TÍCH</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="total-box">
+                <span id="rev-res-title">KẾT QUẢ SUY NGƯỢC</span>
+                <strong id="rev-res-price">0 xu/kg</strong>
+                <div class="sub-info" id="rev-res-detail">Nhập ít nhất 1 mẫu để xem đơn giá</div>
+            </div>
+
+            <!-- Mã khai báo cho app cũ -->
+            <div>
+                <div class="section-title">
+                    <span>Mã Khai Báo Cho App Cũ</span>
+                </div>
+                <div class="code-snippet-box" id="rev-code-snippet">
+                    { name: "Nông sản mới", p: 0, i: "nong_san_moi.png" },
+                </div>
+                <button class="btn-copy-code" onclick="copySnippet()">📋 Sao Chép Dòng Code</button>
+            </div>
+
+            <!-- Dự đoán giá tương lai -->
+            <div>
+                <div class="section-title">
+                    <span>Dự Đoán Giá Tương Lai (Không Cần Hái)</span>
+                </div>
+                <div class="input-group two-col" style="margin-top: 6px;">
+                    <div class="input-box">
+                        <label>TRỌNG LƯỢNG TRONG VƯỜN (KG)</label>
+                        <input type="text" id="rev-future-w" value="1.0" oninput="updateFutureCoins()">
+                    </div>
+                    <div class="input-box" style="background: var(--success-bg);">
+                        <label style="color: var(--success);">XU DỰ KIẾN KHI HÁI</label>
+                        <div id="rev-future-coins" style="font-size: 18px; font-weight: 900; color: var(--success); margin-top: 4px; font-family: monospace;">0 xu</div>
+                    </div>
+                </div>
+
+                <!-- Buff bạn bè khi hái tương lai -->
+                <div style="margin-top: 8px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #64748B; margin-bottom: 6px;">
+                        <span>Buff bạn bè dự kiến khi hái (+5%/người):</span>
+                        <span id="rev-future-f-badge" style="color: var(--primary); font-weight: 900;">+0% (0 bạn)</span>
+                    </div>
+                    <div class="friend-chips-row">
+                        <button type="button" class="f-chip active" id="ff-chip-0" onclick="setFutureFriend(0)">+0% (0)</button>
+                        <button type="button" class="f-chip" id="ff-chip-1" onclick="setFutureFriend(1)">+5% (1)</button>
+                        <button type="button" class="f-chip" id="ff-chip-2" onclick="setFutureFriend(2)">+10% (2)</button>
+                        <button type="button" class="f-chip" id="ff-chip-3" onclick="setFutureFriend(3)">+15% (3)</button>
+                        <button type="button" class="f-chip" id="ff-chip-4" onclick="setFutureFriend(4)">+20% (4)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danh sách mẫu đã nhập -->
+            <div>
+                <div class="section-title">
+                    <span>Danh Sách Mẫu Đã Nhập</span>
+                    <button onclick="clearAllRevSamples()" style="background: none; border: none; color: var(--danger); cursor: pointer; font-weight: 700; font-size: 11px;">XÓA HẾT</button>
+                </div>
+                <div class="history-box" id="rev-history-list">
+                    <div class="empty-history">Chưa có mẫu nào</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Kho dữ liệu nông sản
+const products = [
+    { name: "Cây phong", p: 2330, i: "cay_phong.png", icon: "🍁" }, 
+    { name: "Nhân sâm", p: 725000, i: "nhan_sam.png", icon: "🌿" }, 
+    { name: "Bánh bao", p: 180000, i: "banh_bao.png", icon: "🥟" },
+    { name: "Dưa hấu", p: 5800, i: "dua_hau.png", icon: "🍉" },
+    { name: "Bí ngô", p: 5167, i: "bi_ngo.png", icon: "🎃" }, 
+    { name: "Người tuyết", p: 4600, i: "nguoi_tuyet.png", icon: "⛄" },
+    { name: "Sầu riêng", p: 2500, i: "sau_rieng.png", icon: "🍈" },
+    { name: "Dừa", p: 1000, i: "dua.png", icon: "🥥" }, 
+    { name: "Cây tùng", p: 300, i: "cay_tung.png", icon: "🌲" }, 
+];
+
+// Kho dữ liệu biến thể mới
+const variants = [
+    { n: "Ánh Vàng", v: 3, t: "r", d: "+200% (x3)", c: "c-anh-vang" },
+    { n: "Cầu Vồng", v: 2, t: "r", d: "+100% (x2)", c: "c-cau-vong" },
+    { n: "Băng", v: 0.6, t: "e", d: "+60%", c: "c-bang" },
+    { n: "Cực Quang", v: 0.4, t: "e", d: "+40%", c: "c-cuc-quang" },
+    { n: "Sương", v: 0.4, t: "e", d: "+40%", c: "c-suong" },
+    { n: "Đèn Trời", v: 0.4, t: "e", d: "+40%", c: "c-den-troi" },
+    { n: "Khí Lạnh", v: 0.4, t: "e", d: "+40%", c: "c-khi-lanh" },
+    { n: "Ánh Trăng", v: 0.4, t: "e", d: "+40%", c: "c-anh-trang" },
+    { n: "Bướm", v: 0.3, t: "e", d: "+30%", c: "c-buom" },
+    { n: "Ảo Ảnh", v: 0.3, t: "e", d: "+30%", c: "c-ao-anh" },
+    { n: "Giai Điệu", v: 0.3, t: "e", d: "+30%", c: "c-giai-dieu" },
+    { n: "Gió", v: 0.2, t: "e", d: "+20%", c: "c-gio" },
+    { n: "Cát", v: 0.2, t: "e", d: "+20%", c: "c-cat" },
+    { n: "Khô", v: 0.2, t: "e", d: "+20%", c: "c-kho" },
+    { n: "Nguyền Rủa", v: 0.2, t: "e", d: "+20%", c: "c-nguyen-rua" },
+    { n: "Pháo Hoa", v: 0.2, t: "e", d: "+20%", c: "c-phao-hoa" },
+    { n: "Nhiễm Điện", v: 0.2, t: "e", d: "+20%", c: "c-nhiem-dien" },
+    { n: "Ẩm Ướt", v: 0.1, t: "e", d: "+10%", c: "c-am-uot" }
+];
+// STATE: Chế độ Cân nông sản
+let calcSelectedCrop = null;
+let calcSelectedVars = [];
+let calcCartHistory = [];
+let calcFriendCount = 0;
+
+// STATE: Chế độ Suy ngược giá
+let revSelectedVars = [];
+let revSamples = [];
+let revCurrentBasePrice = 0;
+let revFriendCount = 0;
+let revFutureFriends = 0;
+
+// Chuyển chế độ
+function switchMode(mode) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    if (mode === 'calc') {
+        document.getElementById('tab-calc').classList.add('active');
+        document.getElementById('mode-calc-view').style.display = 'grid';
+        document.getElementById('mode-reverse-view').style.display = 'none';
+    } else {
+        document.getElementById('tab-reverse').classList.add('active');
+        document.getElementById('mode-calc-view').style.display = 'none';
+        document.getElementById('mode-reverse-view').style.display = 'grid';
+        updateRevResult();
+    }
+}
+
+// Cập nhật Buff Bạn Bè ở Chế độ 1
+function setCalcFriend(val) {
+    calcFriendCount = parseInt(val) || 0;
+    document.getElementById('calc-f-range').value = calcFriendCount;
+    document.getElementById('calc-f-badge').innerText = `+${calcFriendCount * 5}% (${calcFriendCount}/4 bạn)`;
+    
+    for (let i = 0; i <= 4; i++) {
+        const btn = document.getElementById(`calc-fc-${i}`);
+        if (btn) btn.classList.toggle('active', i === calcFriendCount);
+    }
+    updateCalcVarUI();
+}
+
+// Cập nhật Buff Bạn Bè ở Chế độ 2 (Suy ngược)
+function setRevFriend(val) {
+    revFriendCount = parseInt(val) || 0;
+    document.getElementById('rev-f-range').value = revFriendCount;
+    document.getElementById('rev-f-badge').innerText = `+${revFriendCount * 5}% (${revFriendCount}/4 bạn)`;
+    
+    for (let i = 0; i <= 4; i++) {
+        const btn = document.getElementById(`rev-fc-${i}`);
+        if (btn) btn.classList.toggle('active', i === revFriendCount);
+    }
+    updateRevVarUI();
+}
+
+// Cập nhật Buff Bạn Bè ở Dự đoán tương lai
+function setFutureFriend(val) {
+    revFutureFriends = parseInt(val) || 0;
+    document.getElementById('rev-future-f-badge').innerText = `+${revFutureFriends * 5}% (${revFutureFriends} bạn)`;
+    for (let i = 0; i <= 4; i++) {
+        const btn = document.getElementById(`ff-chip-${i}`);
+        if (btn) btn.classList.toggle('active', i === revFutureFriends);
+    }
+    updateFutureCoins();
+}
+
+// Khởi chạy App
+function initApp() {
+    renderCalcProducts();
+    renderCalcVariants();
+    renderRevVariants();
+    renderRevPresets();
+
+    // Khôi phục dữ liệu
+    try {
+        const savedCalc = localStorage.getItem('cns_cart_history_v5');
+        if (savedCalc) calcCartHistory = JSON.parse(savedCalc);
+        renderCalcCart();
+        updateCalcTotal();
+
+        const savedRev = localStorage.getItem('cns_rev_samples_v5');
+        if (savedRev) revSamples = JSON.parse(savedRev);
+        renderRevHistory();
+        updateRevResult();
+    } catch (e) {}
+}
+
+// ======================= CHẾ ĐỘ 1: CÂN NÔNG SẢN =======================
+function renderCalcProducts() {
+    document.getElementById('ui-prods-calc').innerHTML = products.map((p, idx) => `
+        <div class="opt-btn cp-item" onclick="selectCalcCrop(${idx})">
+            <div class="icon-box">${p.icon}</div>
+            <span>${p.name}</span>
+            <span style="font-size:10px; color:#94A3B8;">${p.p.toLocaleString('vi-VN')} xu/kg</span>
+        </div>
+    `).join('');
+}
+
+function selectCalcCrop(idx) {
+    document.querySelectorAll('#ui-prods-calc .cp-item').forEach(el => el.classList.remove('selected'));
+    const items = document.querySelectorAll('#ui-prods-calc .cp-item');
+    if (items[idx]) items[idx].classList.add('selected');
+    calcSelectedCrop = products[idx];
+    document.getElementById('selected-p-badge').innerText = `${calcSelectedCrop.name} (${calcSelectedCrop.p.toLocaleString('vi-VN')} xu/kg)`;
+}
+
+function renderCalcVariants() {
+    document.getElementById('ui-vars-calc').innerHTML = variants.map(v => `
+        <div class="opt-btn cv-opt" data-n="${v.n}" onclick="toggleCalcVar('${v.n}')">
+            <span class="${v.c}">${v.n}</span>
+            <span class="desc">${v.d}</span>
+        </div>
+    `).join('');
+}
+
+function toggleCalcVar(vName) {
+    const idx = calcSelectedVars.indexOf(vName);
+    if (idx > -1) {
+        calcSelectedVars.splice(idx, 1);
+    } else {
+        if (calcSelectedVars.length >= 5) {
+            alert("Bạn chỉ được chọn tối đa 5 biến thể!");
+            return;
+        }
+        calcSelectedVars.push(vName);
+    }
+    updateCalcVarUI();
+}
+
+function updateCalcVarUI() {
+    document.querySelectorAll('#ui-vars-calc .cv-opt').forEach(btn => {
+        const name = btn.getAttribute('data-n');
+        btn.classList.toggle('selected', calcSelectedVars.includes(name));
+    });
+    document.getElementById('calc-var-count').innerText = `*Tối đa 5 (${calcSelectedVars.length}/5)`;
+
+    let rm = 1, eb = 0;
+    calcSelectedVars.forEach(vName => {
+        const v = variants.find(x => x.n === vName);
+        if (v) {
+            if (v.t === 'r') rm *= v.v;
+            else eb += v.v;
+        }
+    });
+    eb = Math.round(eb * 100) / 100;
+    const totalMultiplier = Math.round(rm * (1 + eb) * 10000) / 10000;
+    const friendFactor = 1 + calcFriendCount * 0.05;
+    const finalTotal = Math.round(totalMultiplier * friendFactor * 10000) / 10000;
+
+    document.getElementById('calc-mul-summary').innerText = `Tổng hệ số: x${finalTotal.toFixed(2)} (Biến thể x${totalMultiplier.toFixed(2)} • Bạn bè +${calcFriendCount * 5}%)`;
+}
+
+function execForwardCalc() {
+    if (!calcSelectedCrop) {
+        alert("Vui lòng chọn loại nông sản!");
+        return;
+    }
+
+    const weightRaw = document.getElementById('calc-w-val').value.trim().replace(/,/g, '.');
+    const weight = parseFloat(weightRaw);
+    if (!weight || weight <= 0) {
+        alert("Vui lòng nhập cân nặng hợp lệ (> 0)!");
+        return;
+    }
+
+    let rm = 1, eb = 0;
+    calcSelectedVars.forEach(vName => {
+        const v = variants.find(x => x.n === vName);
+        if (v) {
+            if (v.t === 'r') rm *= v.v;
+            else eb += v.v;
+        }
+    });
+    eb = Math.round(eb * 100) / 100;
+    const totalMultiplier = Math.round(rm * (1 + eb) * 10000) / 10000;
+    const friendBuffFactor = 1 + calcFriendCount * 0.05;
+
+    // Mỗi người bạn +5% vào giá trị sau cùng
+    const resCoins = Math.round(weight * calcSelectedCrop.p * totalMultiplier * friendBuffFactor);
+
+    calcCartHistory.unshift({
+        id: Date.now(),
+        name: calcSelectedCrop.name,
+        weight,
+        variants: [...calcSelectedVars],
+        friendCount: calcFriendCount,
+        coins: resCoins
+    });
+
+    try { localStorage.setItem('cns_cart_history_v5', JSON.stringify(calcCartHistory)); } catch(e) {}
+    renderCalcCart();
+    updateCalcTotal();
+
+    document.getElementById('calc-w-val').value = '';
+    calcSelectedVars = [];
+    updateCalcVarUI();
+}
+
+function renderCalcCart() {
+    const container = document.getElementById('calc-history-list');
+    if (calcCartHistory.length === 0) {
+        container.innerHTML = '<div class="empty-history">Giỏ hàng đang trống</div>';
+        return;
+    }
+
+    container.innerHTML = calcCartHistory.map((h, index) => `
+        <div class="history-item">
+            <div class="history-info">
+                <strong>${h.name}</strong> (${h.weight}kg)
+                ${h.variants.length ? `<div style="font-size:11px; color:#64748B;">[${h.variants.join(', ')}]</div>` : ''}
+                ${h.friendCount > 0 ? `<div style="font-size:10px; color:#01B574; font-weight:800;">+${h.friendCount * 5}% Bạn bè (${h.friendCount} bạn)</div>` : ''}
+                <b>${h.coins.toLocaleString('vi-VN')} xu</b>
+            </div>
+            <button class="btn-del" onclick="deleteCalcItem(${index})">&times;</button>
+        </div>
+    `).join('');
+}
+
+function deleteCalcItem(index) {
+    calcCartHistory.splice(index, 1);
+    try { localStorage.setItem('cns_cart_history_v5', JSON.stringify(calcCartHistory)); } catch(e) {}
+    renderCalcCart();
+    updateCalcTotal();
+}
+
+function clearCalcHistory() {
+    if (calcCartHistory.length === 0) return;
+    if (confirm("Xóa toàn bộ giỏ hàng?")) {
+        calcCartHistory = [];
+        try { localStorage.setItem('cns_cart_history_v5', JSON.stringify([])); } catch(e) {}
+        renderCalcCart();
+        updateCalcTotal();
+    }
+}
+
+function updateCalcTotal() {
+    const sum = calcCartHistory.reduce((acc, x) => acc + x.coins, 0);
+    document.getElementById('calc-sum').innerText = sum.toLocaleString('vi-VN') + ' xu';
+}
+
+function clearCalcInputs() {
+    calcSelectedCrop = null;
+    document.querySelectorAll('#ui-prods-calc .cp-item').forEach(el => el.classList.remove('selected'));
+    document.getElementById('selected-p-badge').innerText = 'Chưa chọn';
+    document.getElementById('calc-w-val').value = '';
+    calcSelectedVars = [];
+    setCalcFriend(0);
+    updateCalcVarUI();
+}
+
+// ======================= CHẾ ĐỘ 2: SUY NGƯỢC GIÁ =======================
+function renderRevPresets() {
+    document.getElementById('rev-preset-chips').innerHTML = products.map(p => `
+        <button type="button" style="background:white; border:1px solid #CBD5E1; border-radius:6px; padding:3px 8px; font-size:11px; font-weight:700; cursor:pointer;" onclick="setRevCrop('${p.name}')">${p.name}</button>
+    `).join('');
+}
+
+function setRevCrop(name) {
+    document.getElementById('rev-name').value = name;
+    updateRevResult();
+}
+
+function renderRevVariants() {
+    document.getElementById('ui-vars-rev').innerHTML = variants.map(v => `
+        <div class="opt-btn cv-opt" data-n="${v.n}" onclick="toggleRevVar('${v.n}')">
+            <span class="${v.c}">${v.n}</span>
+            <span class="desc">${v.d}</span>
+        </div>
+    `).join('');
+}
+
+function toggleRevVar(vName) {
+    const idx = revSelectedVars.indexOf(vName);
+    if (idx > -1) {
+        revSelectedVars.splice(idx, 1);
+    } else {
+        if (revSelectedVars.length >= 5) {
+            alert("Bạn chỉ được chọn tối đa 5 biến thể!");
+            return;
+        }
+        revSelectedVars.push(vName);
+    }
+    updateRevVarUI();
+}
+
+function updateRevVarUI() {
+    document.querySelectorAll('#ui-vars-rev .cv-opt').forEach(btn => {
+        const name = btn.getAttribute('data-n');
+        btn.classList.toggle('selected', revSelectedVars.includes(name));
+    });
+    document.getElementById('rev-var-count').innerText = `*Tối đa 5 (${revSelectedVars.length}/5)`;
+
+    let rm = 1, eb = 0;
+    revSelectedVars.forEach(vName => {
+        const v = variants.find(x => x.n === vName);
+        if (v) {
+            if (v.t === 'r') rm *= v.v;
+            else eb += v.v;
+        }
+    });
+    eb = Math.round(eb * 100) / 100;
+    const totalMultiplier = Math.round(rm * (1 + eb) * 10000) / 10000;
+    const friendFactor = 1 + revFriendCount * 0.05;
+    const finalTotal = Math.round(totalMultiplier * friendFactor * 10000) / 10000;
+
+    document.getElementById('rev-mul-summary').innerText = `Tổng hệ số: x${finalTotal.toFixed(2)} (Biến thể x${totalMultiplier.toFixed(2)} • Bạn bè +${revFriendCount * 5}%)`;
+}
+
+function slugify(text) {
+    if (!text) return 'item.png';
+    let str = text.toLowerCase().trim();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+    str = str.replace(/đ/g, 'd');
+    str = str.replace(/[^a-z0-9\s_]/g, '');
+    str = str.replace(/\s+/g, '_');
+    return (str || 'item') + '.png';
+}
+
+function addReverseSample() {
+    const cropName = document.getElementById('rev-name').value.trim();
+    if (!cropName) {
+        alert("Vui lòng nhập hoặc chọn tên loại nông sản!");
+        return;
+    }
+
+    const coinsRaw = document.getElementById('rev-coins').value.trim().replace(/[\s,.]/g, '');
+    const coins = parseFloat(coinsRaw);
+    if (!coins || coins <= 0) {
+        alert("Vui lòng nhập số xu bán được hợp lệ (> 0)!");
+        return;
+    }
+
+    const weightRaw = document.getElementById('rev-w').value.trim().replace(/,/g, '.');
+    const weight = parseFloat(weightRaw);
+    if (!weight || weight <= 0) {
+        alert("Vui lòng nhập cân nặng hợp lệ (> 0)!");
+        return;
+    }
+
+    let rm = 1, eb = 0;
+    revSelectedVars.forEach(vName => {
+        const v = variants.find(x => x.n === vName);
+        if (v) {
+            if (v.t === 'r') rm *= v.v;
+            else eb += v.v;
+        }
+    });
+    eb = Math.round(eb * 100) / 100;
+    const totalMultiplier = Math.round(rm * (1 + eb) * 10000) / 10000;
+    const friendFactor = 1 + revFriendCount * 0.05;
+    const finalTotal = Math.round(totalMultiplier * friendFactor * 10000) / 10000;
+
+    // Suy ngược: basePrice = coins / (weight * finalTotal)
+    const calcBasePrice = coins / (weight * finalTotal);
+
+    revSamples.unshift({
+        id: Date.now(),
+        cropName,
+        coins,
+        weight,
+        variants: [...revSelectedVars],
+        friendCount: revFriendCount,
+        totalMultiplier: finalTotal,
+        calcBasePrice
+    });
+
+    try { localStorage.setItem('cns_rev_samples_v5', JSON.stringify(revSamples)); } catch(e) {}
+    renderRevHistory();
+    updateRevResult();
+
+    document.getElementById('rev-coins').value = '';
+    document.getElementById('rev-w').value = '';
+    revSelectedVars = [];
+    setRevFriend(0);
+    updateRevVarUI();
+}
+
+function renderRevHistory() {
+    const container = document.getElementById('rev-history-list');
+    if (revSamples.length === 0) {
+        container.innerHTML = '<div class="empty-history">Chưa có mẫu nào</div>';
+        return;
+    }
+
+    container.innerHTML = revSamples.map((s) => `
+        <div class="history-item">
+            <div class="history-info">
+                <strong>${s.cropName}</strong> (${s.weight}kg &bull; ${s.coins.toLocaleString('vi-VN')} xu)
+                <div style="font-size:11px; color:#64748B;">
+                    ${s.variants.length ? s.variants.join(', ') : 'Không biến thể'}
+                    ${s.friendCount > 0 ? ` (+${s.friendCount * 5}% Bạn bè)` : ''} (x${s.totalMultiplier})
+                </div>
+                <b>${Math.round(s.calcBasePrice).toLocaleString('vi-VN')} xu/kg</b>
+                <span style="font-size:10px; color:#94A3B8;">(${s.calcBasePrice.toFixed(2)})</span>
+            </div>
+            <button class="btn-del" onclick="deleteRevSample(${s.id})">&times;</button>
+        </div>
+    `).join('');
+}
+
+function deleteRevSample(id) {
+    revSamples = revSamples.filter(s => s.id !== id);
+    try { localStorage.setItem('cns_rev_samples_v5', JSON.stringify(revSamples)); } catch(e) {}
+    renderRevHistory();
+    updateRevResult();
+}
+
+function clearAllRevSamples() {
+    if (revSamples.length === 0) return;
+    if (confirm("Xóa tất cả các mẫu suy ngược đã nhập?")) {
+        revSamples = [];
+        try { localStorage.setItem('cns_rev_samples_v5', JSON.stringify([])); } catch(e) {}
+        renderRevHistory();
+        updateRevResult();
+    }
+}
+
+function clearRevInputs() {
+    document.getElementById('rev-coins').value = '';
+    document.getElementById('rev-w').value = '';
+    revSelectedVars = [];
+    setRevFriend(0);
+    updateRevVarUI();
+}
+
+function updateRevResult() {
+    const activeCrop = document.getElementById('rev-name').value.trim();
+    const filtered = activeCrop 
+        ? revSamples.filter(s => s.cropName.toLowerCase() === activeCrop.toLowerCase()) 
+        : revSamples;
+
+    const resTitle = document.getElementById('rev-res-title');
+    const resPrice = document.getElementById('rev-res-price');
+    const resDetail = document.getElementById('rev-res-detail');
+    const codeSnippet = document.getElementById('rev-code-snippet');
+
+    if (filtered.length === 0) {
+        revCurrentBasePrice = 0;
+        resTitle.innerText = activeCrop ? `KẾT QUẢ: ${activeCrop}` : "KẾT QUẢ SUY NGƯỢC";
+        resPrice.innerText = "0 xu/kg";
+        resDetail.innerText = "Chưa có mẫu nào cho loại cây này";
+        codeSnippet.innerText = `{ name: "${activeCrop || 'Nông sản mới'}", p: 0, i: "${slugify(activeCrop)}" },`;
+        updateFutureCoins();
+        return;
+    }
+
+    const sum = filtered.reduce((acc, s) => acc + s.calcBasePrice, 0);
+    const avg = sum / filtered.length;
+    const rounded = Math.round(avg);
+    revCurrentBasePrice = rounded;
+
+    resTitle.innerText = `KẾT QUẢ: ${filtered[0].cropName}`;
+    resPrice.innerText = `${rounded.toLocaleString('vi-VN')} xu/kg`;
+    resDetail.innerText = `Tổng hợp từ ${filtered.length} mẫu • Trung bình: ${avg.toFixed(2)} xu/kg`;
+
+    codeSnippet.innerText = `{ name: "${filtered[0].cropName}", p: ${rounded}, i: "${slugify(filtered[0].cropName)}" },`;
+    updateFutureCoins();
+}
+
+function updateFutureCoins() {
+    const w = parseFloat(document.getElementById('rev-future-w').value.trim().replace(/,/g, '.')) || 0;
+    const friendFactor = 1 + revFutureFriends * 0.05;
+    const coins = Math.round(w * revCurrentBasePrice * friendFactor);
+    document.getElementById('rev-future-coins').innerText = `${coins.toLocaleString('vi-VN')} xu`;
+}
+
+function copySnippet() {
+    const text = document.getElementById('rev-code-snippet').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Đã sao chép dòng code!");
+    }).catch(() => {
+        const t = document.createElement("textarea");
+        t.value = text;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        document.body.removeChild(t);
+        alert("Đã sao chép dòng code!");
+    });
+}
+
+// Khởi chạy khi tài liệu sẵn sàng
+window.addEventListener('DOMContentLoaded', initApp);
+</script>
+
+</body>
+</html>
