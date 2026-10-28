@@ -488,13 +488,26 @@
     <div class="header">
         <h2>🌾 Cân Nông Sản - made by Tuna</h2>
 		<h3>Tiktok: <a href="https://www.tiktok.com/@_tuna.76">Cá ngừ đẹp trai</a> </h3>
-		<audio controls autoplay>
-  			<source src="tabun.mp3" type="audio/mpeg">
- 			 Trình duyệt của bạn không hỗ trợ thẻ audio.
-		</audio>
+        <button id="playBtn">🎵 Bật nhạc nền</button>
+			<audio id="myAudio" src="tabun.mp3"></audio>
+
+	<script>
+  		const playBtn = document.getElementById('playBtn');
+  		const audio = document.getElementById('myAudio');
+
+  		playBtn.addEventListener('click', function() {
+    	if (audio.paused) {
+   	   audio.play();
+   	   playBtn.innerText = "⏸ Dừng nhạc";
+  	  } else {
+   	   audio.pause();
+   	   playBtn.innerText = "🎵 Bật nhạc nền";
+   	 }
+ 	 });
+	</script>
         <div class="mode-nav">
             <button class="mode-btn active" id="tab-calc" onclick="switchMode('calc')">CÂN NÔNG SẢN</button>
-            <button class="mode-btn" id="tab-reverse" onclick="switchMode('reverse')">SUY NGƯỢC GIÁ</button>
+            <button class="mode-btn" id="tab-reverse" onclick="switchMode('reverse')">SUY NGƯỢC GIÁ (DEV only)</button>
         </div>
     </div>
 
@@ -541,7 +554,7 @@
                     <button type="button" class="f-chip" id="calc-fc-3" onclick="setCalcFriend(3)">+15% (3)</button>
                     <button type="button" class="f-chip" id="calc-fc-4" onclick="setCalcFriend(4)">+20% (4)</button>
                 </div>
-                <div class="friend-note">*Mỗi người bạn trong phòng +5% vào giá trị xu sau cùng (Tối đa 4 người = +20%)</div>
+                <div class="friend-note">*Mỗi người bạn trong map +5% vào giá trị xu sau cùng (Tối đa 4 người = +20%)</div>
             </div>
 
             <div class="action-row">
@@ -552,7 +565,7 @@
 
         <div class="panel">
             <div class="total-box">
-                <span>TỔNG XU ƯỚC TÍNH</span>
+                <span>TỔNG SỐ XU ƯỚC TÍNH</span>
                 <strong id="calc-sum">0 xu</strong>
             </div>
 
@@ -562,7 +575,7 @@
                     <button onclick="clearCalcHistory()" style="background: none; border: none; color: var(--danger); cursor: pointer; font-weight: 700; font-size: 12px;">XÓA HẾT</button>
                 </div>
                 <div class="history-box" id="calc-history-list">
-                    <div class="empty-history">Giỏ hàng đang trống</div>
+                    <div class="empty-history">Lịch sử cân đang trống</div>
                 </div>
             </div>
         </div>
@@ -608,7 +621,7 @@
             <!-- THANH BUFF BẠN BÈ LÚC BÁN MẪU: Max 4 người, mỗi người +5% -->
             <div class="friend-buff-box">
                 <div class="friend-buff-header">
-                    <span>👥 Bạn Bè Lúc Bán Mẫu (+5%/người, max 4)</span>
+                    <span>👥 Bạn Bè Cùng Map Lúc Nhập Mẫu (+5%/người)</span>
                     <span class="friend-badge" id="rev-f-badge">+0% (0/4 bạn)</span>
                 </div>
                 <input type="range" class="friend-range" id="rev-f-range" min="0" max="4" value="0" step="1" oninput="setRevFriend(this.value)">
@@ -619,7 +632,7 @@
                     <button type="button" class="f-chip" id="rev-fc-3" onclick="setRevFriend(3)">+15% (3)</button>
                     <button type="button" class="f-chip" id="rev-fc-4" onclick="setRevFriend(4)">+20% (4)</button>
                 </div>
-                <div class="friend-note">*Game đã tự cộng +5%/người vào xu bán mẫu; công cụ sẽ chia tỉ lệ để hoàn nguyên giá gốc xu/kg.</div>
+                <div class="friend-note">*Chú ý: Vì game mặc định +5%/người vào xu bán mẫu; công cụ sẽ chia tỉ lệ để hoàn nguyên giá gốc xu/kg.</div>
             </div>
 
             <div class="action-row">
@@ -646,23 +659,7 @@
                 <button class="btn-copy-code" onclick="copySnippet()">📋 Sao Chép Dòng Code</button>
             </div>
 
-            <!-- Dự đoán giá tương lai -->
-            <div>
-                <div class="section-title">
-                    <span>Dự Đoán Giá Tương Lai (Không Cần Hái)</span>
-                </div>
-                <div class="input-group two-col" style="margin-top: 6px;">
-                    <div class="input-box">
-                        <label>TRỌNG LƯỢNG TRONG VƯỜN (KG)</label>
-                        <input type="text" id="rev-future-w" value="1.0" oninput="updateFutureCoins()">
-                    </div>
-                    <div class="input-box" style="background: var(--success-bg);">
-                        <label style="color: var(--success);">XU DỰ KIẾN KHI HÁI</label>
-                        <div id="rev-future-coins" style="font-size: 18px; font-weight: 900; color: var(--success); margin-top: 4px; font-family: monospace;">0 xu</div>
-                    </div>
-                </div>
-
-                <!-- Buff bạn bè khi hái tương lai -->
+<!--                 Buff bạn bè khi hái tương lai
                 <div style="margin-top: 8px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 10px;">
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: #64748B; margin-bottom: 6px;">
                         <span>Buff bạn bè dự kiến khi hái (+5%/người):</span>
@@ -677,6 +674,23 @@
                     </div>
                 </div>
             </div>
+-->
+            <!-- Dự đoán giá tương lai -->
+            <div>
+                <div class="section-title">
+                    <span>Dự Đoán Giá (KHÔNG BIẾN THỂ)</span>
+                </div>
+                <div class="input-group two-col" style="margin-top: 6px;">
+                    <div class="input-box">
+                        <label>TRỌNG LƯỢNG (KG)</label>
+                        <input type="text" id="rev-future-w" value="1.0" oninput="updateFutureCoins()">
+                    </div>
+                    <div class="input-box" style="background: var(--success-bg);">
+                        <label style="color: var(--success);">XU DỰ KIẾN </label>
+                        <div id="rev-future-coins" style="font-size: 18px; font-weight: 900; color: var(--success); margin-top: 4px; font-family: monospace;">0 xu</div>
+                    </div>
+                </div>
+
 
             <!-- Danh sách mẫu đã nhập -->
             <div>
@@ -933,7 +947,7 @@ function execForwardCalc() {
 function renderCalcCart() {
     const container = document.getElementById('calc-history-list');
     if (calcCartHistory.length === 0) {
-        container.innerHTML = '<div class="empty-history">Giỏ hàng đang trống</div>';
+        container.innerHTML = '<div class="empty-history">Lịch sử cân đang trống!</div>';
         return;
     }
 
